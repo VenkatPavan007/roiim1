@@ -1,0 +1,145 @@
+<html>
+    <head>
+		<meta charset="UTF-8">
+		<script src="https://hosted.paysafe.com/checkout/v2/paysafe.checkout.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    </head>
+
+ 
+    <body class="container" >
+        <form>
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="firstName" class="form-control">              
+            </div>
+            <div class="form-group">
+              <label>Middle Name</label>
+              <input id="middleName" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input id="lastName" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input id="phone" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input id="email" type="email" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>City</label>
+                <input id="city" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Amount</label>
+                <input id="amount" type="number" class="form-control">
+            </div>
+                    
+          </form>
+          
+          <button type="button" onclick="checkout()"> Proceed to Payment </button>    
+        
+    
+    </body>
+    <script>           
+        function checkout() {
+            var firstName = document.getElementById('firstName').value;
+            var MiddleName = document.getElementById('middleName').value;
+            var lastName = document.getElementById('lastName').value;
+            var city = document.getElementById('city').value;
+            var phone = document.getElementById('phone').value;
+            var email = document.getElementById('email').value;
+            var amount = document.getElementById('amount').value;
+            
+            paysafe.checkout.setup("cHVibGljLTc3NTE6Qi1xYTItMC01ZjAzMWNiZS0wLTMwMmQwMjE1MDA4OTBlZjI2MjI5NjU2M2FjY2QxY2I0YWFiNzkwMzIzZDJmZDU3MGQzMDIxNDUxMGJjZGFjZGFhNGYwM2Y1OTQ3N2VlZjEzZjJhZjVhZDEzZTMwNDQ=", {
+                "currency": "USD",
+                "amount": parseFloat(amount,10)*100,
+                "canEditAmount" : true,
+                "locale": "en_US",
+                "customer": {
+                    "firstName": firstName,
+                    "lastName": lastName,
+                    "email": email,
+                    "phone": phone,
+                    "dateOfBirth": {
+                        "day": 1,
+                        "month": 7,
+                        "year": 1990
+                    }
+                },
+                "billingAddress": {
+                    "nickName": "John Dee",
+                    "street": "20735 Stevens Creek Blvd",
+                    "street2": "Montessori",
+                    "city": city,
+                    "zip": "95014",
+                    "country": "US",
+                    "state": "CA"
+                },
+                "environment": "TEST",
+                "merchantRefNum": "1559900597607",
+                "canEditAmount": true,
+                "merchantDescriptor": {   
+                    "dynamicDescriptor": "XYZ",
+                    "phone": "1234567890"
+                    },
+                "displayPaymentMethods":["skrill","card"],
+                "paymentMethodDetails": {
+                    "paysafecard": {
+                        "consumerId": "1232323"
+                    },
+                    "paysafecash": {
+                        "consumerId": "123456"
+                    },
+                    "sightline": {
+                        "consumerId": "123456",
+                        "SSN": "123456789",
+                        "last4ssn": "6789",
+                        "accountId":"1009688222"
+                    },
+                    "vippreferred":{
+                        "consumerId": "550726575",
+                        "accountId":"1679688456"
+                    }
+                }
+            }, function(instance, error, result) {
+                if (result && result.paymentHandleToken) {
+                    console.log(result.paymentHandleToken);
+                    $.ajax({
+						type: "POST",
+						url: "/data",
+						contentType: "application/json",
+                        data: JSON.stringify({token: result.paymentHandleToken, 
+                        saveCard : result.customerOperation,
+                        email : email ,
+                        amount: amount}),
+						success: (data) =>{	
+							console.log(data);					
+                            if(data === '201')
+                                instance.showSuccessScreen("Payment Successful!");
+                            else
+                            instance.showFailureScreen("Payment was declined. Try again with the same or another payment method.");					
+						}
+					});		
+				} 
+				else {
+                    console.error(error);
+                    // Handle the error
+                }
+            }, function(stage, expired) {
+                switch(stage) {
+                    case "PAYMENT_HANDLE_NOT_CREATED": // Handle the scenario
+                    case "PAYMENT_HANDLE_CREATED": // Handle the scenario
+                    case "PAYMENT_HANDLE_REDIRECT": // Handle the scenario
+                    case "PAYMENT_HANDLE_PAYABLE": // Handle the scenario
+                    default: // Handle the scenario
+                }
+            });
+        }
+    
+    </script>
+
+</html>
