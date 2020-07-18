@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 const routes = require('./routes/paymentRoutes');
 
-const MONGODB_URI =  'mongodb://venkat:@Mlab123@ds123346.mlab.com:23346/heroku_dxlf3wwd';
+const MONGODB_URI =  'mongodb://venkat:mlabs123@ds123346.mlab.com:23346/heroku_dxlf3wwd';
 
 app.use(bodyParser.urlencoded({extended:false}));
 
