@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 const routes = require('./routes/paymentRoutes');
 
-const MONGODB_URI =  'mongodb://venkat:mlabs123@ds123346.mlab.com:23346/heroku_dxlf3wwd';
+const MONGODB_URI =  'mongodb+srv://venkat:mongodb123@cluster0-co7kp.mongodb.net/roiim?retryWrites=true&w=majority';
 
 app.use(bodyParser.urlencoded({extended:false}));
 
@@ -22,7 +22,7 @@ app.set('views', __dirname + '/views');
 app.use(routes);
 
 mongoose
-  .connect(MONGODB_URI || process.env.MONGOLAB_AQUA_URI )
+  .connect(MONGODB_URI || process.env.MONGODB_URI )
   .then(result => {
     app.listen(PORT);
   })
