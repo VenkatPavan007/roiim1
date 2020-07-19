@@ -13,15 +13,13 @@ module.exports.getPayment = (req, res, next) => {
 module.exports.postData = (req, res, next) => {
     const merchantRefNum = randomString.generate(255);
     const token = req.body.token;
-    const saveCard = req.body.saveCard;
-    console.log("This is saveCard" + saveCard + typeof(saveCard));
+    const saveCard = req.body.saveCard;    
     const amount = parseFloat(req.body.amount) * 100;
     
     email = req.body.email;
     User.findOne({ email: email })
         .then(user => {
-            if (!user) {  // user doesnt exists 
-                console.log("User doesnt exists"); 
+            if (!user) {  // user doesnt exists                 
                 const MerchCustID = randomString.generate(10);
                 merchantCustomerId = MerchCustID;
                 const newUser = new User({
@@ -32,12 +30,10 @@ module.exports.postData = (req, res, next) => {
             }
             else {
 
-                if (user.customerId == null) {
-                    console.log("no CID");
+                if (user.customerId == null) {                    
                     merchantCustomerId = user.merchantCustomerId;
                 }
-                else {
-                    console.log("YEs CID");
+                else {                    
                     hasCustomerId = 1;
                     merchantCustomerId = user.merchantCustomerId;
                     customerId = user.customerId;
@@ -45,8 +41,7 @@ module.exports.postData = (req, res, next) => {
 
             }
         })
-        .then(result => {
-            console.log(result);
+        .then(result => {            
             const body = {
                 "merchantRefNum": merchantRefNum,
                 "amount": amount,
@@ -57,12 +52,9 @@ module.exports.postData = (req, res, next) => {
                 "customerIp": "10.10.12.64",
                 "description": "Magazine subscription"
             };
-            if (saveCard === 'ADD') {
-                console.log("Save Card");
-                if (customerId === undefined) {
-                    console.log("Here" + merchantCustomerId);
-                    body.merchantCustomerId = merchantCustomerId;
-                    console.log("No customer ID");
+            if (saveCard === 'ADD') {                
+                if (customerId === undefined) {                    
+                    body.merchantCustomerId = merchantCustomerId;                    
                 }
                 else {
                     body.customerId = customerId;
@@ -80,17 +72,12 @@ module.exports.postData = (req, res, next) => {
                 body: JSON.stringify(body)
             }
             console.log(options.body);
-            request(options, function (error, response, body) {
-                //console.log(response.statusCode);
-                const resp = JSON.parse(response.body);
-                console.log(resp);
-                console.log(resp.customerId);
-                console.log(resp.multiUsePaymentHandleToken);
-                //console.log(email);
+            request(options, function (error, response, body) {                
+                const resp = JSON.parse(response.body);    
+                
                 if (saveCard === 'ADD') {
                     if(hasCustomerId == 0)
-                    {
-                        console.log("resp  no customer id");
+                    {                        
                         User.findOne({ email: email })
                         .then(user => {
                             user.customerId = resp.customerId;
@@ -117,8 +104,7 @@ module.exports.postData = (req, res, next) => {
 }
 
 module.exports.postToken = (req, res, next) => {
-    const email = req.body.email;
-    console.log("THIS SHOULD BE PRINTED FIRST");
+    const email = req.body.email;    
     User.findOne({ email: email })
         .then(user => {
             if (!user) {
@@ -146,10 +132,9 @@ module.exports.postToken = (req, res, next) => {
                         },
                         body: JSON.stringify(body)
                     }
-                    console.log("options.body" + options.body);
+                    
                     request(options, function (error, response, body) {                        
-                        const resp = JSON.parse(response.body);          
-                        console.log(resp.singleUseCustomerToken);                                   
+                        const resp = JSON.parse(response.body);                                                         
                         res.send(resp.singleUseCustomerToken);
                     });                    
                 }
