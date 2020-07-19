@@ -78,7 +78,8 @@ module.exports.postData = (req, res, next) => {
                 const resp = JSON.parse(response.body);
                 console.log(resp);
                 console.log(email);
-                User.findOne({ email: email })
+                if(saveCard === 'ADD'){
+                    User.findOne({ email: email })
                     .then(user => {
                         user.customerId = resp.customerId;
                         user.multiUsePaymentHandleToken = resp.multiUsePaymentHandleToken;
@@ -90,6 +91,7 @@ module.exports.postData = (req, res, next) => {
                     .catch(err => {
                         console.log(err);
                     })
+                }                
                 res.send(JSON.stringify(response.statusCode));
             });
             
