@@ -1,0 +1,9 @@
+1. Verify that saveCard is working after user has checked the "Save this card details button"
+2. Verify that PaymentHandleToken has been generated and is available in the result callback in setup function
+3. Verify that you are passing Base-64 encoded public and private keys
+4. Verify that call to the API is done from the backend to not expose private key to users
+5. Verify that body and headers of API call are in proper format
+6. Verify that amount is converted according to the currency specified
+7. Verify that a unique merchantRefNum is being generated for every transaction
+8. Verify that a merchantCustomerId is being generated for the first time when user selects Save Card details 
+9. Verify that a valid SinglePaymentToken is generate
