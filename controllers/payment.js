@@ -13,13 +13,15 @@ module.exports.getPayment = (req, res, next) => {
 module.exports.postData = (req, res, next) => {
     const merchantRefNum = randomString.generate(255);
     const token = req.body.token;
-    const saveCard = req.body.saveCard;    
+    const saveCard = req.body.saveCard;  
+    //console.log("Save Card" + saveCard);  
     const amount = parseFloat(req.body.amount) * 100;
     
     email = req.body.email;
     User.findOne({ email: email })
         .then(user => {
-            if (!user) {  // user doesnt exists                 
+            if (!user) {  // user doesnt exists              
+                //console.log("User Doesnt exists");   
                 const MerchCustID = randomString.generate(10);
                 merchantCustomerId = MerchCustID;
                 const newUser = new User({
@@ -29,7 +31,7 @@ module.exports.postData = (req, res, next) => {
                 return newUser.save()
             }
             else {
-
+                //console.log("User already exists");
                 if (user.customerId == null) {                    
                     merchantCustomerId = user.merchantCustomerId;
                 }
@@ -38,8 +40,9 @@ module.exports.postData = (req, res, next) => {
                     merchantCustomerId = user.merchantCustomerId;
                     customerId = user.customerId;
                 }
-
+                
             }
+            
         })
         .then(result => {            
             const body = {
@@ -77,7 +80,7 @@ module.exports.postData = (req, res, next) => {
                 
                 if (saveCard === 'ADD') {
                     if(hasCustomerId == 0)
-                    {                        
+                    {    console.log("Here");                    
                         User.findOne({ email: email })
                         .then(user => {
                             user.customerId = resp.customerId;
