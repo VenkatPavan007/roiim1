@@ -6,14 +6,14 @@ const mongoose = require('mongoose');
 
 const routes = require('./routes/paymentRoutes');
 
-const MONGODB_URI =  'mongodb+srv://venkat:mongodb123@cluster0-co7kp.mongodb.net/roiim?retryWrites=true&w=majority';
+//const MONGODB_URI =  'mongodb+srv://venkat:mongodb123@cluster0-co7kp.mongodb.net/roiim?retryWrites=true&w=majority';
 
 app.use(bodyParser.urlencoded({extended:false}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json());
-var PORT = process.env.PORT || 5000;
+var PORT = process.env.PORT || 8080;
 app.engine('html', require('ejs').renderFile);
 
 app.set('view engine', 'html');
@@ -22,7 +22,7 @@ app.set('views', __dirname + '/views');
 app.use(routes);
 
 mongoose
-  .connect(MONGODB_URI || process.env.MONGODB_URI )
+  .connect(process.env.MONGODB_URI )
   .then(result => {
     app.listen(PORT);
   })
