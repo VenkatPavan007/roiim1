@@ -2,8 +2,7 @@ const User = require('../models/User');
 const request = require('request');
 const randomString = require('randomstring');
 
-var merchantCustomerId, customerId;
-var email, result, hasCustomerId = 0;;
+
 
 module.exports.getPayment = (req, res, next) => {
     res.render('./index.html');
@@ -11,6 +10,8 @@ module.exports.getPayment = (req, res, next) => {
 
 
 module.exports.postData = (req, res, next) => {
+    var merchantCustomerId, customerId;
+    var email, result, hasCustomerId = 0;
     const merchantRefNum = randomString.generate(255);
     const token = req.body.token;
     const saveCard = req.body.saveCard;  
